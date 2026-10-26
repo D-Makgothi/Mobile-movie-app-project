@@ -82,7 +82,7 @@ const Search = () => {
               <Text className="text-red-500 px-5">Error: {error.message}</Text>
             )}
 
-            {!loading && !error && searchQuery.trim() && movies?.length > 0 && (
+            {!loading && !error && !!searchQuery.trim() && !!movies?.length && (
               <Text className="text-xl text-white font-bold mb-3">
                 Search Results for{" "}
                 <Text className="text-accent">{searchQuery}</Text>
