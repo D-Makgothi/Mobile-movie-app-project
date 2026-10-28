@@ -1,7 +1,13 @@
 import { icons } from "@/constants/icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { fetchMovieDetails } from "../../../services/api";
+import {
+  isMovieSaved,
+  saveMovie,
+  unsaveMovie,
+} from "../../../services/appwrite";
 import useFetch from "../../../services/useFetch";
 
 interface MovieInfoProps {
@@ -25,6 +31,24 @@ const MovieDetails = () => {
     fetchMovieDetails(id as string),
   );
 
+  // ---------- Bookmark ----------
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (movie) isMovieSaved(movie.id).then(setSaved);
+  }, [movie]);
+
+  const toggleSave = async () => {
+    if (!movie) return;
+    if (saved) {
+      await unsaveMovie(movie.id);
+      setSaved(false);
+    } else {
+      await saveMovie(movie);
+      setSaved(true);
+    }
+  };
+
   return (
     <View className="bg-primary flex-1">
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
@@ -39,7 +63,18 @@ const MovieDetails = () => {
         </View>
 
         <View className="flex-col items-start justify-center mt-5 px-5">
-          <Text className="text-white font-bold text-xl">{movie?.title}</Text>
+          <View className="flex-row items-center justify-between w-full">
+            <Text className="text-white font-bold text-xl flex-1">
+              {movie?.title}
+            </Text>
+            <TouchableOpacity onPress={toggleSave} className="p-2">
+              <Image
+                source={icons.save}
+                className="size-6"
+                tintColor={saved ? "#AB8BFF" : "#fff"}
+              />
+            </TouchableOpacity>
+          </View>
 
           <View className="flex-row items-center gap-x-1 mt-2">
             <Text className="text-light-200 text-sm">
