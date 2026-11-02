@@ -84,3 +84,20 @@ interface SavedMovie {
   vote_average: number;
   release_date: string;
 }
+
+interface ProfileMovie {
+  id: number;
+  title: string;
+  poster_path: string | null;
+  vote_average: number;
+  release_date: string;
+}
+
+interface Profile {
+  name: string;
+  bio: string;
+  favouriteGenres: string[];
+  favouriteMovies: ProfileMovie[];
+  recentlyViewed: ProfileMovie[];
+  joinedAt: string;
+}

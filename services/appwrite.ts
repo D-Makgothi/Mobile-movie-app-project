@@ -57,7 +57,6 @@ export const getTrendingMovies = async (): Promise<
   }
 };
 
-// ---------- Saved movies ----------
 export const saveMovie = async (movie: MovieDetails) => {
   await database.createDocument(DATABASE_ID, SAVED_COLLECTION_ID, ID.unique(), {
     movie_id: movie.id,

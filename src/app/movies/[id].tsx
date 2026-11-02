@@ -8,6 +8,11 @@ import {
   saveMovie,
   unsaveMovie,
 } from "../../../services/appwrite";
+import {
+  addRecentlyViewed,
+  isFavouriteMovie,
+  toggleFavouriteMovie,
+} from "../../../services/profile";
 import useFetch from "../../../services/useFetch";
 
 interface MovieInfoProps {
@@ -34,9 +39,19 @@ const MovieDetails = () => {
   // ---------- Bookmark ----------
   const [saved, setSaved] = useState(false);
 
+  // ---------- Favourite + recently viewed ----------
+  const [favourite, setFavourite] = useState(false);
+
   useEffect(() => {
-    if (movie) isMovieSaved(movie.id).then(setSaved);
+    if (!movie) return;
+    isMovieSaved(movie.id).then(setSaved);
+    isFavouriteMovie(movie.id).then(setFavourite);
+    addRecentlyViewed(movie);
   }, [movie]);
+
+  const toggleFavourite = async () => {
+    if (movie) setFavourite(await toggleFavouriteMovie(movie));
+  };
 
   const toggleSave = async () => {
     if (!movie) return;
@@ -67,6 +82,13 @@ const MovieDetails = () => {
             <Text className="text-white font-bold text-xl flex-1">
               {movie?.title}
             </Text>
+            <TouchableOpacity onPress={toggleFavourite} className="p-2">
+              <Text
+                className={`text-2xl ${favourite ? "text-accent" : "text-white"}`}
+              >
+                {favourite ? "♥" : "♡"}
+              </Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleSave} className="p-2">
               <Image
                 source={icons.save}
